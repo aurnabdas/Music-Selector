@@ -7,6 +7,7 @@ function App() {
   const [artistVal, setArtistVal] = useState("");
   const [accessToken, setAccessToken] = useState("");
   const [artistId, setArtistId] = useState("");
+  const [relatedArists, setRelatedArtists] = useState([]);
 
   // this creates the token we need to authenticate ourselves to be able to use the Spotify API
   useEffect(() => {
@@ -42,10 +43,31 @@ function App() {
     setArtistId(data.artists.items[0].id);
   }
 
+  // related artists based on the current artist id
+  async function getRelatedArtists() {
+    const relatedArtistsParameters = {
+      method: "GET", 
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      };
+
+      const response = await fetch(
+        `https://api.spotify.com/v1/artists/${artistId}/related-artists`,
+        relatedArtistsParameters
+      );
+      const data = await response.json();
+      console.log(data);
+
+      setRelatedArtists(data.artists);
+    }
+
 // when user submits the what artist they want, the each time they change any value it changes the value of what that input box is 
   const change = (event) => {
     setArtistVal(event.target.value);
   };
+
 
   // we are returning the input box and the button, and displaying the value of the APi call
   return (
@@ -53,6 +75,17 @@ function App() {
       <input onChange={change} value={artistVal} />
       <button onClick={search}>Search</button>
       {artistId && <h1>Artist ID: {artistId}</h1>}
+      {artistId && <button onClick={getRelatedArtists}>Get Related Artists</button>}
+      {relatedArists.length > 0 && (
+        <div>
+          <h2>Related Artists:</h2>
+          <ul>
+            {relatedArists.map((artist) => (
+              <li key ={artist.id}>{artist.name}</li>
+            ))}
+          </ul>
+          </div>
+      )}
     </div>
   );
 }

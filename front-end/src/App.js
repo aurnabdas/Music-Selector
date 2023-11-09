@@ -7,85 +7,142 @@ function App() {
   const [artistVal, setArtistVal] = useState("");
   const [accessToken, setAccessToken] = useState("");
   const [artistId, setArtistId] = useState("");
-  const [relatedArists, setRelatedArtists] = useState([]);
+  const [relatedArtists, setRelatedArtists] = useState([]);
+  const [topTracks, setTopTracks] = useState([]);
 
-  // this creates the token we need to authenticate ourselves to be able to use the Spotify API
+  // Fetch access token on component mount
   useEffect(() => {
-    const authParameters = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: `grant_type=client_credentials&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}`,
+    const fetchAccessToken = async () => {
+      const authParameters = new URLSearchParams();
+      authParameters.append("grant_type", "client_credentials");
+
+      const authResponse = await fetch("https://accounts.spotify.com/api/token", {
+        method: "POST",
+        headers: {
+          "Authorization": `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`,
+        },
+        body: authParameters,
+      });
+
+      if (authResponse.ok) {
+        const authData = await authResponse.json();
+        setAccessToken(authData.access_token);
+      }
     };
 
-    fetch("https://accounts.spotify.com/api/token", authParameters)
-      .then((result) => result.json())
-      .then((data) => setAccessToken(data.access_token));
+    fetchAccessToken();
   }, []);
 
-// this call's the Spotify API and it will give us the specific artist id we need to make additional api calls
+  // Function to search for the artist
   async function search() {
-    const artistParameters = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    };
+    try {
+      const artistResponse = await fetch(
+        `https://api.spotify.com/v1/search?q=${artistVal}&type=artist`,
+        {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${accessToken}`,
+          },
+        }
+      );
 
-    const response = await fetch(
-      `https://api.spotify.com/v1/search?q=${artistVal}&type=artist`,
-      artistParameters
-    );
-    const data = await response.json();
+      if (artistResponse.ok) {
+        const artistData = await artistResponse.json();
+        const firstArtist = artistData.artists.items[0];
 
-    setArtistId(data.artists.items[0].id);
+        if (firstArtist) {
+          setArtistId(firstArtist.id);
+        }
+      }
+    } catch (error) {
+      console.error("Error searching for artist:", error);
+    }
   }
 
-  // related artists based on the current artist id
+  // Function to get related artists based on the current artist id
   async function getRelatedArtists() {
-    const relatedArtistsParameters = {
-      method: "GET", 
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      };
-
-      const response = await fetch(
+    try {
+      const relatedArtistsResponse = await fetch(
         `https://api.spotify.com/v1/artists/${artistId}/related-artists`,
-        relatedArtistsParameters
+        {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${accessToken}`,
+          },
+        }
       );
-      const data = await response.json();
-      console.log(data);
 
-      setRelatedArtists(data.artists);
+      if (relatedArtistsResponse.ok) {
+        const relatedArtistsData = await relatedArtistsResponse.json();
+        setRelatedArtists(relatedArtistsData.artists);
+      }
+    } catch (error) {
+      console.error("Error fetching related artists:", error);
     }
+  }
 
-// when user submits the what artist they want, the each time they change any value it changes the value of what that input box is 
-  const change = (event) => {
+  // Function to get top tracks based on the current artist id
+  async function getTopTracks() {
+    try {
+      const topTracksResponse = await fetch(
+        `https://api.spotify.com/v1/artists/${artistId}/top-tracks?country=US`,
+        {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      if (topTracksResponse.ok) {
+        const topTracksData = await topTracksResponse.json();
+        setTopTracks(topTracksData.tracks);
+      }
+    } catch (error) {
+      console.error("Error fetching top tracks:", error);
+    }
+  }
+
+  // Function to handle changes in the input field
+  const handleInputChange = (event) => {
     setArtistVal(event.target.value);
   };
 
-
-  // we are returning the input box and the button, and displaying the value of the APi call
   return (
     <div>
-      <input onChange={change} value={artistVal} />
+      <h1>Spotify Artist Search</h1>
+      <p>Enter your favorite artist and explore their related artists and top tracks.</p>
+
+      <input onChange={handleInputChange} value={artistVal} placeholder="Enter artist name" />
       <button onClick={search}>Search</button>
-      {artistId && <h1>Artist ID: {artistId}</h1>}
+
+      {artistId && <h2>Artist ID: {artistId}</h2>}
+
       {artistId && <button onClick={getRelatedArtists}>Get Related Artists</button>}
-      {relatedArists.length > 0 && (
+      {relatedArtists.length > 0 && (
         <div>
           <h2>Related Artists:</h2>
           <ul>
-            {relatedArists.map((artist) => (
-              <li key ={artist.id}>{artist.name}</li>
+            {relatedArtists.map((artist) => (
+              <li key={artist.id}>{artist.name}</li>
             ))}
           </ul>
-          </div>
+        </div>
       )}
+
+      <div>
+        {artistId && <button onClick={getTopTracks}>Get Top Tracks</button>}
+        {topTracks.length > 0 && (
+          <div>
+            <h2>Top Tracks:</h2>
+            <ul>
+              {topTracks.map((track) => (
+                <li key={track.id}>{track.name}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

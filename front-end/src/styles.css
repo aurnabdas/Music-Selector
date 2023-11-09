@@ -1,90 +1,140 @@
+/* Reset box model and set base font styles */
 * {
   box-sizing: border-box;
 }
 
 body {
-  font-family: sans-serif;
-  margin: 20px;
+  font-family: Arial, sans-serif;
+  margin: 0;
   padding: 0;
 }
 
+/* Header styles */
 h1 {
-  margin-top: 0;
-  font-size: 22px;
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
 }
 
+/* Section headers */
 h2 {
-  margin-top: 0;
-  font-size: 20px;
+  font-size: 22px;
+  margin-top: 20px;
+  color: #333;
 }
 
 h3 {
-  margin-top: 0;
-  font-size: 18px;
+  font-size: 20px;
+  margin-top: 20px;
+  color: #333;
 }
 
-h4 {
-  margin-top: 0;
+/* Buttons */
+button {
+  background-color: #007BFF;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
   font-size: 16px;
 }
 
-h5 {
-  margin-top: 0;
-  font-size: 14px;
+button:hover {
+  background-color: #0056b3;
 }
 
-h6 {
-  margin-top: 0;
-  font-size: 12px;
-}
-
-code {
-  font-size: 1.2em;
-}
-
-ul {
-  padding-inline-start: 20px;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  font-family: sans-serif;
-  margin: 20px;
-  padding: 0;
-}
-
-.square {
-  background: #fff;
-  border: 1px solid #999;
-  float: left;
-  font-size: 24px;
-  font-weight: bold;
-  line-height: 34px;
-  height: 34px;
-  margin-right: -1px;
-  margin-top: -1px;
-  padding: 0;
-  text-align: center;
-  width: 34px;
-}
-
-.board-row:after {
-  clear: both;
-  content: '';
-  display: table;
-}
-
-.status {
+/* Input field */
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
   margin-bottom: 10px;
 }
-.game {
-  display: flex;
-  flex-direction: row;
+
+/* Lists */
+ul {
+  list-style-type: none;
+  padding: 0;
 }
 
-.game-info {
-  margin-left: 20px;
+li {
+  margin: 5px 0;
+}
+
+/* Container styles */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f7f7f7;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Artist information styles */
+.artist-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.artist-image {
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.artist-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Result list styles */
+.results {
+  margin-top: 20px;
+}
+
+.results h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.results ul {
+  padding-left: 20px;
+}
+
+.results li {
+  font-size: 16px;
+  margin: 5px 0;
+  color: #333;
+}
+
+/* Error message styles */
+.error {
+  color: #ff0000;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+/* Loading spinner styles */
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.3);
+  border-top: 4px solid #007BFF;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

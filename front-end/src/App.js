@@ -8,8 +8,11 @@ function App() {
   const [accessToken, setAccessToken] = useState("");
   const [artistId, setArtistId] = useState("");
   const [relatedArists, setRelatedArtists] = useState([]);
+  const [artistAlbum, setArtistAlbum] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // this creates the token we need to authenticate ourselves to be able to use the Spotify API
+  // Authentication effect
   useEffect(() => {
     const authParameters = {
       method: "POST",
@@ -24,52 +27,89 @@ function App() {
       .then((data) => setAccessToken(data.access_token));
   }, []);
 
-// this call's the Spotify API and it will give us the specific artist id we need to make additional api calls
+  // Search function
   async function search() {
-    const artistParameters = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    };
-
-    const response = await fetch(
-      `https://api.spotify.com/v1/search?q=${artistVal}&type=artist`,
-      artistParameters
-    );
-    const data = await response.json();
-
-    setArtistId(data.artists.items[0].id);
-  }
-
-  // related artists based on the current artist id
-  async function getRelatedArtists() {
-    const relatedArtistsParameters = {
-      method: "GET", 
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      };
-
+    try {
+      setLoading(true);
       const response = await fetch(
-        `https://api.spotify.com/v1/artists/${artistId}/related-artists`,
-        relatedArtistsParameters
+        `https://api.spotify.com/v1/search?q=${artistVal}&type=artist`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
       );
       const data = await response.json();
-      console.log(data);
 
-      setRelatedArtists(data.artists);
+      if (data.artists.items.length > 0) {
+        setArtistId(data.artists.items[0].id);
+        setError(null);
+      } else {
+        setError("No artist found");
+      }
+    } catch (error) {
+      setError("Error searching for the artist");
+    } finally {
+      setLoading(false);
     }
+  }
 
-// when user submits the what artist they want, the each time they change any value it changes the value of what that input box is 
+  // Get related artists function
+  async function getRelatedArtists() {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `https://api.spotify.com/v1/artists/${artistId}/related-artists`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      const data = await response.json();
+      setRelatedArtists(data.artists);
+    } catch (error) {
+      setError("Error fetching related artists");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Get artist albums function
+  async function getAlbum() {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `https://api.spotify.com/v1/artists/${artistId}/albums`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      const data = await response.json();
+
+      const albums = data.items.map((item) => item.name);
+      setArtistAlbum(albums);
+      setError(null);
+    } catch (error) {
+      setError("Error fetching artist albums");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Input change handler
   const change = (event) => {
     setArtistVal(event.target.value);
   };
 
-
-  // we are returning the input box and the button, and displaying the value of the APi call
   return (
     <div>
       <input onChange={change} value={artistVal} />
@@ -81,10 +121,21 @@ function App() {
           <h2>Related Artists:</h2>
           <ul>
             {relatedArists.map((artist) => (
-              <li key ={artist.id}>{artist.name}</li>
+              <li key={artist.id}>{artist.name}</li>
             ))}
           </ul>
-          </div>
+        </div>
+      )}
+      {artistId && <button onClick={getAlbum}>Get Artists albums</button>}
+      {artistAlbum.length > 0 && (
+        <div>
+          <h2>Artist Albums:</h2>
+          <ul>
+            {artistAlbum.map((album, index) => (
+              <li key={index}>{album}</li>
+            ))}
+          </ul>
+        </div>
       )}
     </div>
   );

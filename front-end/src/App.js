@@ -110,9 +110,14 @@ function App() {
 
   return (
     <div>
-      <input onChange={handleInputChange} value={artistVal} />
+      <h1>Spotify Artist Search</h1>
+      <p>Enter your favorite artist and explore their related artists and top tracks.</p>
+
+      <input onChange={handleInputChange} value={artistVal} placeholder="Enter artist name" />
       <button onClick={search}>Search</button>
-      {artistId && <h1>Artist ID: {artistId}</h1>}
+
+      {artistId && <h2>Artist ID: {artistId}</h2>}
+
       {artistId && <button onClick={getRelatedArtists}>Get Related Artists</button>}
       {relatedArtists.length > 0 && (
         <div>
@@ -124,6 +129,7 @@ function App() {
           </ul>
         </div>
       )}
+
       <div>
         {artistId && <button onClick={getTopTracks}>Get Top Tracks</button>}
         {topTracks.length > 0 && (

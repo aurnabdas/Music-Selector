@@ -9,6 +9,9 @@ function App() {
   const [artistId, setArtistId] = useState("");
   const [relatedArtists, setRelatedArtists] = useState([]);
   const [topTracks, setTopTracks] = useState([]);
+  const [artistAlbum, setArtistAlbum] = useState([]);
+  const [loading,setLoading] = useState(false);
+  const [error,setError] = useState(null);
 
   // Fetch access token on component mount
   useEffect(() => {
@@ -108,8 +111,34 @@ function App() {
     setArtistVal(event.target.value);
   };
 
+  // Get artist albums function
+    async function getAlbum() {
+        try {
+          setLoading(true);
+          const response = await fetch(
+            `https://api.spotify.com/v1/artists/${artistId}/albums`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+          const data = await response.json();
+    
+          const albums = data.items.map((item) => item.name);
+          setArtistAlbum(albums);
+          setError(null);
+        } catch (error) {
+          setError("Error fetching artist albums");
+        } finally {
+          setLoading(false);
+        }
+      }
+
   return (
-    <div>
+    <>
       <h1>Spotify Artist Search</h1>
       <p>Enter your favorite artist and explore their related artists and top tracks.</p>
 
@@ -130,7 +159,8 @@ function App() {
         </div>
       )}
 
-      <div>
+
+      
         {artistId && <button onClick={getTopTracks}>Get Top Tracks</button>}
         {topTracks.length > 0 && (
           <div>
@@ -142,8 +172,20 @@ function App() {
             </ul>
           </div>
         )}
-      </div>
-    </div>
+     {artistId && <button onClick={getAlbum}>Get Artists albums</button>}
+      {artistAlbum.length > 0 && (
+        <div>
+          <h2>Artist Albums:</h2>
+          <ul>
+            {artistAlbum.map((album, index) => (
+              <li key={index}>{album}</li>
+            ))}
+          </ul>
+        </div> 
+      )}
+
+      
+    </>
   );
 }
 

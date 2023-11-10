@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+import Albumns from "./Albums";
+import TopTracks from "./TopTracks";
+import RelatedArtist from "./RelatedArtist";
 
 const CLIENT_ID = "16007201c81a4da79959ad58b8c47b49";
 const CLIENT_SECRET = "cb79de79bbbf4dc9a7389b8e0d032cda";
@@ -7,11 +10,7 @@ function App() {
   const [artistVal, setArtistVal] = useState("");
   const [accessToken, setAccessToken] = useState("");
   const [artistId, setArtistId] = useState("");
-  const [relatedArtists, setRelatedArtists] = useState([]);
-  const [topTracks, setTopTracks] = useState([]);
-  const [artistAlbum, setArtistAlbum] = useState([]);
-  const [loading,setLoading] = useState(false);
-  const [error,setError] = useState(null);
+  
 
   // Fetch access token on component mount
   useEffect(() => {
@@ -62,81 +61,13 @@ function App() {
     }
   }
 
-  // Function to get related artists based on the current artist id
-  async function getRelatedArtists() {
-    try {
-      const relatedArtistsResponse = await fetch(
-        `https://api.spotify.com/v1/artists/${artistId}/related-artists`,
-        {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${accessToken}`,
-          },
-        }
-      );
-
-      if (relatedArtistsResponse.ok) {
-        const relatedArtistsData = await relatedArtistsResponse.json();
-        setRelatedArtists(relatedArtistsData.artists);
-      }
-    } catch (error) {
-      console.error("Error fetching related artists:", error);
-    }
-  }
-
-  // Function to get top tracks based on the current artist id
-  async function getTopTracks() {
-    try {
-      const topTracksResponse = await fetch(
-        `https://api.spotify.com/v1/artists/${artistId}/top-tracks?country=US`,
-        {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${accessToken}`,
-          },
-        }
-      );
-
-      if (topTracksResponse.ok) {
-        const topTracksData = await topTracksResponse.json();
-        setTopTracks(topTracksData.tracks);
-      }
-    } catch (error) {
-      console.error("Error fetching top tracks:", error);
-    }
-  }
 
   // Function to handle changes in the input field
   const handleInputChange = (event) => {
     setArtistVal(event.target.value);
   };
 
-  // Get artist albums function
-    async function getAlbum() {
-        try {
-          setLoading(true);
-          const response = await fetch(
-            `https://api.spotify.com/v1/artists/${artistId}/albums`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${accessToken}`,
-              },
-            }
-          );
-          const data = await response.json();
-    
-          const albums = data.items.map((item) => item.name);
-          setArtistAlbum(albums);
-          setError(null);
-        } catch (error) {
-          setError("Error fetching artist albums");
-        } finally {
-          setLoading(false);
-        }
-      }
-
+ 
   return (
     <>
       <h1>Spotify Artist Search</h1>
@@ -147,42 +78,10 @@ function App() {
 
       {artistId && <h2>Artist ID: {artistId}</h2>}
 
-      {artistId && <button onClick={getRelatedArtists}>Get Related Artists</button>}
-      {relatedArtists.length > 0 && (
-        <div>
-          <h2>Related Artists:</h2>
-          <ul>
-            {relatedArtists.map((artist) => (
-              <li key={artist.id}>{artist.name}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-
       
-        {artistId && <button onClick={getTopTracks}>Get Top Tracks</button>}
-        {topTracks.length > 0 && (
-          <div>
-            <h2>Top Tracks:</h2>
-            <ul>
-              {topTracks.map((track) => (
-                <li key={track.id}>{track.name}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-     {artistId && <button onClick={getAlbum}>Get Artists albums</button>}
-      {artistAlbum.length > 0 && (
-        <div>
-          <h2>Artist Albums:</h2>
-          <ul>
-            {artistAlbum.map((album, index) => (
-              <li key={index}>{album}</li>
-            ))}
-          </ul>
-        </div> 
-      )}
+     <RelatedArtist artist={artistId} access={accessToken}/>
+     <TopTracks artist={artistId} access={accessToken}/>
+     <Albumns artist={artistId} access={accessToken}/>
 
       
     </>

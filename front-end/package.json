@@ -1,16 +1,21 @@
 {
+  "homepage": "http://aurnabdas.github.io/Music-Selector",
   "dependencies": {
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-scripts": "^5.0.0"
   },
   "main": "/index.js",
-  "devDependencies": {},
-  "name": "vy6j3f",
+  "devDependencies": {
+    "gh-pages": "^6.0.0"
+  },
+  "name": "Music-Selector",
   "description": null,
   "version": "0.0.0",
   "scripts": {
     "start": "react-scripts start",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"

@@ -4,6 +4,7 @@ import Albumns from "./Albums";
 import TopTracks from "./TopTracks";
 import RelatedArtist from "./RelatedArtist";
 
+
 const CLIENT_ID = "16007201c81a4da79959ad58b8c47b49";
 const CLIENT_SECRET = "cb79de79bbbf4dc9a7389b8e0d032cda";
 
@@ -73,10 +74,11 @@ function App() {
     <>
 
     <nav>
-      <Link to="Music-Selector/RelatedArtist" activeClassName="active-link">Related Artists</Link>
-      <Link to="Music-Selector/TopTracks" activeClassName="active-link">Top Tracks</Link>
-      <Link to="Music-Selector/Albums" activeClassName="active-link">Albums</Link>  
-     </nav>
+      <Link to="/Music-Selector/RelatedArtist" activeClassName="active-link">Related Artists</Link>
+      <Link to="/Music-Selector/Albums" activeClassName="active-link">Albums</Link>  
+      <Link to="/Music-Selector/Albums/TopTracks" activeClassName="active-link">Top Tracks</Link>
+    </nav>
+     
      <div className="container">
       <h1>Spotify Artist Search</h1>
       <p>Enter your favorite artist and explore their related artists and top tracks.</p>
@@ -92,16 +94,20 @@ function App() {
 
      
     <Routes>
-      <Route path="Music-Selector/RelatedArtist" element={<RelatedArtist artist={artistId} access={accessToken}/>} />
-      <Route path="Music-Selector/TopTracks" element={<TopTracks artist={artistId} access={accessToken}/>} />
-      <Route path="Music-Selector/Albums" element={<Albumns artist={artistId} access={accessToken} />} />
+    
+      <Route path="/Music-Selector/RelatedArtist" element={<RelatedArtist artist={artistId} access={accessToken}/>} />
+      
+      <Route path="/Music-Selector/Albums"> 
+
+        <Route index element={<Albumns artist={artistId} access={accessToken} />}/>
+        <Route path="TopTracks" element={<TopTracks artist={artistId} access={accessToken}/>}/>
+
+      </Route>
+
     </Routes>
     </div>
 
  
- 
-     
-   
 
       
     </>

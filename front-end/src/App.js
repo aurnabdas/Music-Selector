@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import {Link, Route, Routes} from "react-router-dom"
 import Albumns from "./Albums";
 import TopTracks from "./TopTracks";
 import RelatedArtist from "./RelatedArtist";
@@ -70,6 +71,13 @@ function App() {
  
   return (
     <>
+
+    <nav>
+      <Link to="Music-Selector/RelatedArtist" activeClassName="active-link">Related Artists</Link>
+      <Link to="Music-Selector/TopTracks" activeClassName="active-link">Top Tracks</Link>
+      <Link to="Music-Selector/Albums" activeClassName="active-link">Albums</Link>  
+     </nav>
+     <div className="container">
       <h1>Spotify Artist Search</h1>
       <p>Enter your favorite artist and explore their related artists and top tracks.</p>
 
@@ -78,10 +86,22 @@ function App() {
 
       {artistId && <h2>Artist ID: {artistId}</h2>}
 
-      
-     <RelatedArtist artist={artistId} access={accessToken}/>
+      {/* <RelatedArtist artist={artistId} access={accessToken}/>
      <TopTracks artist={artistId} access={accessToken}/>
-     <Albumns artist={artistId} access={accessToken}/>
+     <Albumns artist={artistId} access={accessToken}/> */}
+
+     
+    <Routes>
+      <Route path="Music-Selector/RelatedArtist" element={<RelatedArtist artist={artistId} access={accessToken}/>} />
+      <Route path="Music-Selector/TopTracks" element={<TopTracks artist={artistId} access={accessToken}/>} />
+      <Route path="Music-Selector/Albums" element={<Albumns artist={artistId} access={accessToken} />} />
+    </Routes>
+    </div>
+
+ 
+ 
+     
+   
 
       
     </>

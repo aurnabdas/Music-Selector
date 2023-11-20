@@ -37,8 +37,10 @@ return(
               <li key={artist.id}>{artist.name}</li>
             ))}
           </ul>
+
         </div>
       )}
+   
 </>
 
 )}

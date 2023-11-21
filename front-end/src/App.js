@@ -3,6 +3,8 @@ import {Link, Route, Routes} from "react-router-dom"
 import Albumns from "./Albums";
 import TopTracks from "./TopTracks";
 import RelatedArtist from "./RelatedArtist";
+import { useDispatch, useSelector } from 'react-redux';
+import { setArtistId, setAccessToken, setPicture } from './actions'; 
 
 
 
@@ -11,10 +13,10 @@ const CLIENT_SECRET = "cb79de79bbbf4dc9a7389b8e0d032cda";
 
 function App() {
   const [artistVal, setArtistVal] = useState("");
-  const [accessToken, setAccessToken] = useState("");
-  const [artistId, setArtistId] = useState("");
-  const [picture, setPicture] = useState("")
-  
+  const dispatch = useDispatch();
+  const artistId = useSelector(state => state.artistId); 
+  const accessToken = useSelector(state => state.accessToken);
+  const picture = useSelector(state => state.picture);
 
   // Fetch access token on component mount
   useEffect(() => {
@@ -32,7 +34,7 @@ function App() {
 
       if (authResponse.ok) {
         const authData = await authResponse.json();
-        setAccessToken(authData.access_token);
+        dispatch(setAccessToken(authData.access_token));
       }
     };
 
@@ -57,8 +59,9 @@ function App() {
         
         const firstArtist = artistData.artists.items[0];
         const image = artistData.artists.items[0].images[0].url
-        setPicture(image);
-        setArtistId(firstArtist.id);
+        dispatch(setPicture(image));
+        dispatch(setArtistId(firstArtist.id));
+      
         
       }
     } catch (error) {
@@ -99,15 +102,15 @@ function App() {
      <Albumns artist={artistId} access={accessToken}/> */}
 
       <Routes>
-        {/* <Route path="/Music-Selector" element={artistId && <h2>Artist ID: {artistId}</h2>}/> */}
-        <Route path="/Music-Selector/RelatedArtist" element={<RelatedArtist artist={artistId} access={accessToken}/>
-      } 
-        />
+        
+        <Route path="/Music-Selector" element={artistId && <h2>Artist ID: {artistId}</h2>}/>
+        <Route path="/Music-Selector/RelatedArtist" element={<RelatedArtist/>} />
 
         <Route path="/Music-Selector/Albums" >
-          <Route index element={<Albumns artist={artistId} access={accessToken} />}/>
-          <Route path="TopTracks" element={<TopTracks artist={artistId} access={accessToken}/>}/>
+          <Route index element={<Albumns/>}/>
+          <Route path="TopTracks" element={<TopTracks />}/>
         </Route>
+
       </Routes>
 
     </div>

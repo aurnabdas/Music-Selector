@@ -26,7 +26,8 @@ function TopTracks({artist, access}){
     }
   }
 
-return(<>
+return(
+<>
 
 {artist && <button onClick={getTopTracks}>Get Top Tracks</button>}
         {topTracks.length > 0 && (
@@ -39,6 +40,8 @@ return(<>
             </ul>
           </div>
         )}
+
+
 
 </>
 )}

@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import {Link, Route, Routes} from "react-router-dom"
+
 
 function Albumns({artist, access}){
 
@@ -34,6 +36,8 @@ const [error,setError] = useState(null);
 
 return(
 <>
+   
+     
 
 {artist && <button onClick={getAlbum}>Get Artists albums</button>}
       {artistAlbum.length > 0 && (

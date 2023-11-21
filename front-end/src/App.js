@@ -13,6 +13,7 @@ function App() {
   const [artistVal, setArtistVal] = useState("");
   const [accessToken, setAccessToken] = useState("");
   const [artistId, setArtistId] = useState("");
+  const [picture, setPicture] = useState("")
   
 
   // Fetch access token on component mount
@@ -53,11 +54,12 @@ function App() {
 
       if (artistResponse.ok) {
         const artistData = await artistResponse.json();
+        
         const firstArtist = artistData.artists.items[0];
-
-        if (firstArtist) {
-          setArtistId(firstArtist.id);
-        }
+        const image = artistData.artists.items[0].images[0].url
+        setPicture(image);
+        setArtistId(firstArtist.id);
+        
       }
     } catch (error) {
       console.error("Error searching for artist:", error);
@@ -87,7 +89,8 @@ function App() {
 
       <input onChange={handleInputChange} value={artistVal} placeholder="Enter artist name" />
       <button onClick={search}>Search</button>
-      {artistId && <h2>Artist ID: {artistId}</h2>}
+      {picture && <h2> {<img src={picture} style={{ width: '200px', height: 'auto' }} />}</h2>}
+      
 
       
 

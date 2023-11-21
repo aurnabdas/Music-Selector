@@ -42,6 +42,11 @@ function Albumns(){
 
 return(
 <>
+<nav>
+        <Link to="/Music-Selector/Search/RelatedArtist" activeClassName="active-link">Related Artists</Link>
+        <Link to="/Music-Selector/Search/Albums" activeClassName="active-link">Albums</Link>
+        <Link to="/Music-Selector/Search/TopTracks" activeClassName="active-link">Top Tracks</Link>
+      </nav>
    
      
   

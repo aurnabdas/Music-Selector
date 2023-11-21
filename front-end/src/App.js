@@ -5,6 +5,7 @@ import TopTracks from "./TopTracks";
 import RelatedArtist from "./RelatedArtist";
 import { useDispatch, useSelector } from 'react-redux';
 import { setArtistId, setAccessToken, setPicture } from './actions'; 
+import Error from "./Error"
 
 
 
@@ -111,7 +112,10 @@ function App() {
           <Route path="TopTracks" element={<TopTracks />}/>
         </Route>
 
+        <Route path="*" element={<Error />} />
+
       </Routes>
+
 
     </div>
 

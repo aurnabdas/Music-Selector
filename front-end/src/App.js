@@ -5,6 +5,7 @@ import TopTracks from "./TopTracks";
 import RelatedArtist from "./RelatedArtist";
 
 
+
 const CLIENT_ID = "16007201c81a4da79959ad58b8c47b49";
 const CLIENT_SECRET = "cb79de79bbbf4dc9a7389b8e0d032cda";
 
@@ -77,6 +78,7 @@ function App() {
       <Link to="/Music-Selector/RelatedArtist" activeClassName="active-link">Related Artists</Link>
       <Link to="/Music-Selector/Albums" activeClassName="active-link">Albums</Link>  
       <Link to="/Music-Selector/Albums/TopTracks" activeClassName="active-link">Top Tracks</Link>
+
     </nav>
      
      <div className="container">
@@ -85,31 +87,28 @@ function App() {
 
       <input onChange={handleInputChange} value={artistVal} placeholder="Enter artist name" />
       <button onClick={search}>Search</button>
-
       {artistId && <h2>Artist ID: {artistId}</h2>}
+
+      
 
       {/* <RelatedArtist artist={artistId} access={accessToken}/>
      <TopTracks artist={artistId} access={accessToken}/>
      <Albumns artist={artistId} access={accessToken}/> */}
 
-     
-    <Routes>
-    
-      <Route path="/Music-Selector/RelatedArtist" element={<RelatedArtist artist={artistId} access={accessToken}/>} />
-      
-      <Route path="/Music-Selector/Albums"> 
+      <Routes>
+        {/* <Route path="/Music-Selector" element={artistId && <h2>Artist ID: {artistId}</h2>}/> */}
+        <Route path="/Music-Selector/RelatedArtist" element={<RelatedArtist artist={artistId} access={accessToken}/>
+      } 
+        />
 
-        <Route index element={<Albumns artist={artistId} access={accessToken} />}/>
-        <Route path="TopTracks" element={<TopTracks artist={artistId} access={accessToken}/>}/>
+        <Route path="/Music-Selector/Albums" >
+          <Route index element={<Albumns artist={artistId} access={accessToken} />}/>
+          <Route path="TopTracks" element={<TopTracks artist={artistId} access={accessToken}/>}/>
+        </Route>
+      </Routes>
 
-      </Route>
-
-    </Routes>
     </div>
 
- 
-
-      
     </>
   );
 }

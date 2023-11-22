@@ -1,16 +1,15 @@
-import { useEffect, useState } from "react";
-import {Link, Route, Routes} from "react-router-dom"
+// RelatedArtist.js
+import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
-import { setArtistId, setAccessToken, setRelatedArtists } from './actions'; 
+import { setRelatedArtists } from './actions';
+import './RelatedArtist.css';
 
- 
-
-function RelatedArtist({artist, access}){
-
-const dispatch = useDispatch();
-const relatedArtists = useSelector(state => state.relatedArtists); 
-const artistId = useSelector(state => state.artistId); 
-const accessToken = useSelector(state => state.accessToken);
+function RelatedArtist() {
+  const dispatch = useDispatch();
+  const artistId = useSelector(state => state.artistId); 
+  const accessToken = useSelector(state => state.accessToken);
+  const relatedArtists = useSelector(state => state.relatedArtists);
 
   // Function to get related artists based on the current artist id
   async function getRelatedArtists() {
@@ -34,15 +33,17 @@ const accessToken = useSelector(state => state.accessToken);
     }
   }
 
-return(
-<>
-<nav>
+  return (
+    <>
+      <nav>
         <Link to="/Music-Selector/" activeClassName="active-link">Home</Link>
         <Link to="/Music-Selector/Search/RelatedArtist" activeClassName="active-link">Related Artists</Link>
         <Link to="/Music-Selector/Search/Albums" activeClassName="active-link">Albums</Link>
         <Link to="/Music-Selector/Search/TopTracks" activeClassName="active-link">Top Tracks</Link>
       </nav>
-{artistId && <button onClick={getRelatedArtists}>Get Related Artists</button>}
+      {artistId && accessToken && (
+        <button onClick={getRelatedArtists} className="get-related-artists-button">Get Related Artists</button>
+      )}
       {relatedArtists.length > 0 && (
         <div>
           <h2>Related Artists:</h2>
@@ -51,12 +52,10 @@ return(
               <li key={artist.id}>{artist.name}</li>
             ))}
           </ul>
-
         </div>
       )}
-   
-</>
-
-)}
+    </>
+  );
+}
 
 export default RelatedArtist;

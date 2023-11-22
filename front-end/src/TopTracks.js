@@ -1,11 +1,9 @@
+// TopTracks.js
 import React from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
-import { setArtistId, setAccessToken, setTopTracks } from './actions';
-
-// Define your constants here
-const CLIENT_ID = "your_client_id";
-const CLIENT_SECRET = "your_client_secret";
+import { setTopTracks } from './actions';
+import './TopTracks.css';
 
 function TopTracks() {
   const dispatch = useDispatch();
@@ -44,7 +42,7 @@ function TopTracks() {
         <Link to="/Music-Selector/Search/TopTracks" activeClassName="active-link">Top Tracks</Link>
       </nav>
 
-      {artistId && <button onClick={getTopTracks}>Get Top Tracks</button>}
+      {artistId && <button onClick={getTopTracks} className="get-top-tracks-button">Get Top Tracks</button>}
       {topTracks.length > 0 && (
         <div>
           <h2>Top Tracks:</h2>
